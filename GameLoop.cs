@@ -8,23 +8,25 @@ using System.Threading.Tasks;
 namespace MiniProjectBlackJack
 {
     /// <summary>
-    /// FOR TOMORROW THE 10th, Get back to writing the hit or stay method 
+    /// FOR TOMORROW make sure you make a loss case for if the player busts during the player hit/stay method
     /// </summary>
     public class GameLoop
     {
         //Main gameloop
         public static void Run()
         {
-            Deck.CreateDeck();
+            Deck.CreateDeck(); // Deck creation
             Console.WriteLine("WELCOME TO BLACKJACK!");
             while (StartOrEnd())
             {
                 Deck.ShuffleDeck(); // Inital shuffle
                 Player player = new Player(); //New player and Dealer Creation
                 Dealer dealer = new Dealer();
-                Deal(player, dealer);
-                PlayerHitOrStay(player);
-                
+                Deal(player, dealer); // Deals initial cards, sets hands, calulates totals, prints hands
+                PlayerHitOrStay(player); // User choice to hit or stay, updates player hand and total accordingly
+                //DealerHitOrStay(dealer); // Reveals dealer's hand, hits or stays based on total
+
+
             }
             
         }
@@ -117,6 +119,11 @@ namespace MiniProjectBlackJack
                     Console.Write($"  =  {player.CardValueSum}");
                     Console.WriteLine();
 
+                    if (player.CardValueSum > 21)
+                    {
+                        whileChoice = false;
+                        Console.WriteLine("BUST, Dealer wins! PLayer Loses!");
+                    }
                 }
                 else
                 {
@@ -124,6 +131,16 @@ namespace MiniProjectBlackJack
                 }
             }
             
+        }
+        
+        //Reveal dealer hidden card and hit if total is below 17 and stay if 17 or greater
+        static void DealerHitOrStay(Dealer dealer)
+        {
+            bool whileChoice = true;
+            while (whileChoice)
+            {
+                dealer.PrintHand();
+            }
         }
 
     }
