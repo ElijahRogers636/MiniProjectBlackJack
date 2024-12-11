@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MiniProjectBlackJack
 {
     /// <summary>
-    /// FOR TOMORROW make sure you make a loss case for if the player busts during the player hit/stay method
+    /// FOR TOMORROW Add and method to check who wins, Fix the recursion issue(Outputs stack)
     /// </summary>
     public class GameLoop
     {
@@ -174,9 +174,7 @@ namespace MiniProjectBlackJack
                 else
                 {
                     Console.WriteLine();
-                    Console.Write("Dealer hand total: ");
-                    dealer.PrintHand();
-                    Console.Write($"  =  {dealer.CardValueSum}");
+                    Console.WriteLine($"Dealer Stays with a total of: {dealer.CardValueSum}");
                     Console.WriteLine();
                     whileChoice = false;
                 }
