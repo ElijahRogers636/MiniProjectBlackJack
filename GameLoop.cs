@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,17 +16,20 @@ namespace MiniProjectBlackJack
         //Main gameloop
         public static void Run()
         {
-            Deck.CreateDeck(); // Deck creation
-            Console.WriteLine("WELCOME TO BLACKJACK!");
             while (StartOrEnd())
             {
                 Deck.ShuffleDeck(); // Inital shuffle
                 Player player = new Player(); //New player and Dealer Creation
                 Dealer dealer = new Dealer();
                 Deal(player, dealer); // Deals initial cards, sets hands, calulates totals, prints hands
-                PlayerHitOrStay(player); // User choice to hit or stay, updates player hand and total accordingly
-                //DealerHitOrStay(dealer); // Reveals dealer's hand, hits or stays based on total
-
+                if (PlayerHitOrStay(player)) // User choice to hit or stay, updates player hand and total accordingly
+                {
+                    Run(); // If true, recursivly call Run() to restart game
+                }
+                if (DealerHitOrStay(dealer))// Reveals dealer's hand, hits or stays based on total
+                {
+                    Run();
+                }
 
             }
             
@@ -34,6 +38,8 @@ namespace MiniProjectBlackJack
         //Initial choice to start or end program
         public static bool StartOrEnd()
         {
+            Console.WriteLine();
+            Console.WriteLine("WELCOME TO BLACKJACK!");
             Console.WriteLine("Would you like to start a game or Exit the program?");
             Console.WriteLine();
             Console.WriteLine("Type BEGIN to sart and new game    OR    EXIT to exit the program");
@@ -60,28 +66,24 @@ namespace MiniProjectBlackJack
             // First card goes to player
             Card card = Deck.ShuffledCardDeck.Pop();
             player.AddToHand(card);
-            player.CardValueSum += card.CardValue;
             Console.WriteLine($"First Card to player: {card.CardName}");
 
             Console.WriteLine();
             //Next is dealer hidden card
             card = Deck.ShuffledCardDeck.Pop();
             dealer.AddToHand(card);
-            dealer.CardValueSum += card.CardValue;
             Console.WriteLine($"First Card to Dealer: HIDDEN");
 
             Console.WriteLine();
             //Next is player 2nd card
             card = Deck.ShuffledCardDeck.Pop();
             player.AddToHand(card);
-            player.CardValueSum += card.CardValue;
             Console.WriteLine($"Second Card to player: {card.CardName}");
 
             Console.WriteLine();
             //Last is dealer 2nd card show
             card = Deck.ShuffledCardDeck.Pop();
             dealer.AddToHand(card);
-            dealer.CardValueSum += card.CardValue;
             Console.WriteLine($"Second Card to Dealer: {card.CardName}");
 
             Console.WriteLine("<========== DEAL END ==========>");
@@ -95,21 +97,23 @@ namespace MiniProjectBlackJack
         }
 
         //Hit or stay choice of the game for player
-        static void PlayerHitOrStay(Player player)
+        static bool PlayerHitOrStay(Player player)
         {
             bool whileChoice = true;
             while (whileChoice)
             {
                 Console.WriteLine();
                 Console.WriteLine("Do you wish to HIT or STAY?");
+                Console.WriteLine();
                 Console.Write("Enter Here:");
                 string choice = Console.ReadLine().Trim().ToLower();
+                Console.WriteLine();
+
                 if (choice == "hit")
                 {
                     // Give the player a new card
                     Card card = Deck.ShuffledCardDeck.Pop();
                     player.AddToHand(card);
-                    player.CardValueSum += card.CardValue;
                     Console.WriteLine($"New Card to player: {card.CardName}");
 
                     Console.WriteLine();
@@ -121,8 +125,10 @@ namespace MiniProjectBlackJack
 
                     if (player.CardValueSum > 21)
                     {
-                        whileChoice = false;
+                        Console.WriteLine();
                         Console.WriteLine("BUST, Dealer wins! PLayer Loses!");
+                        Console.WriteLine();
+                        return true;
                     }
                 }
                 else
@@ -130,17 +136,52 @@ namespace MiniProjectBlackJack
                     whileChoice = false;
                 }
             }
+            return false;
             
         }
         
         //Reveal dealer hidden card and hit if total is below 17 and stay if 17 or greater
-        static void DealerHitOrStay(Dealer dealer)
+        static bool DealerHitOrStay(Dealer dealer)
         {
+            // Reveal Dealer cards
+            Console.Write("Dealer Reveals Hand: ");
+            dealer.PrintHand();
+            Console.WriteLine();
+
             bool whileChoice = true;
             while (whileChoice)
             {
-                dealer.PrintHand();
+                // If dealer card values are less than 17 he must hit else stay
+                if (dealer.CardValueSum < 17)
+                {
+                    Card card = Deck.ShuffledCardDeck.Pop();
+                    Console.WriteLine();
+                    Console.WriteLine("Dealer Has Less Than 17, He draws another card");
+                    dealer.AddToHand(card);
+                    Console.WriteLine();
+                    Console.Write("Dealer hand total: ");
+                    dealer.PrintHand();
+                    Console.Write($"  =  {dealer.CardValueSum}");
+                    Console.WriteLine();
+                    if (dealer.CardValueSum > 21)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("BUST, Player wins! Dealer Loses!");
+                        Console.WriteLine();
+                        return true;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.Write("Dealer hand total: ");
+                    dealer.PrintHand();
+                    Console.Write($"  =  {dealer.CardValueSum}");
+                    Console.WriteLine();
+                    whileChoice = false;
+                }
             }
+            return false;
         }
 
     }

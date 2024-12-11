@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +16,15 @@ namespace MiniProjectBlackJack
         public void AddToHand(Card card)
         {
             CurrentCards.Add(card);
+
+            if (CardValueSum > 10 && card.Face == "Ace")
+            {
+                CardValueSum += 1;
+            }
+            else
+            {
+                CardValueSum += card.CardValue;
+            }
         }
 
         // Prints the current hand for a dealer or player

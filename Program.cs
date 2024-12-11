@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            GameLoop.Run();       
+            Deck.CreateDeck(); // Deck creation
+            GameLoop.Run(); // Runs the content of the game      
         }
     }
 }
