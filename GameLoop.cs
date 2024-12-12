@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MiniProjectBlackJack
 {
     /// <summary>
-    /// Single player blackjack, Deals and Dealer plays automatically, Player choses to hit or stay
+    /// Single player blackjack, Deals and Dealer plays automatically, Player choses to hit or stay, one deck
     /// No betting yet
     /// </summary>
     public class GameLoop

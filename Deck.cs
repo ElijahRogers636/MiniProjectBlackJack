@@ -76,6 +76,7 @@ namespace MiniProjectBlackJack
         // Shuffles the CardDeck array in place then populates the stack we use for our gameplay loop
         public static void ShuffleDeck()
         {
+            ShuffledCardDeck.Clear();
             Random rand = new Random();
             rand.Shuffle(CardDeck);
             
