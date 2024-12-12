@@ -44,8 +44,26 @@ namespace MiniProjectBlackJack
             Console.WriteLine("Would you like to start a game or Exit the program?");
             Console.WriteLine();
             Console.WriteLine("Type BEGIN to start and new game    OR    EXIT to exit the program");
-            Console.Write("Choice: ");
-            string choice = Console.ReadLine().Trim().ToLower();
+            
+            //Error handle to check for correct user input
+            bool errorCheckChoice = true;
+            string choice;
+            do
+            {
+                Console.Write("Choice: ");
+                choice = Console.ReadLine().Trim().ToLower();
+                if (choice == "begin" || choice == "exit")
+                {
+                    errorCheckChoice = false;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"[{choice}] is not an option. Please input choice again.");
+                    Console.WriteLine();
+                }
+                
+            } while (errorCheckChoice);
             Console.WriteLine();
 
             if (choice == "begin")
@@ -117,8 +135,26 @@ namespace MiniProjectBlackJack
                 Console.WriteLine();
                 Console.WriteLine("Do you wish to HIT or STAY?");
                 Console.WriteLine();
-                Console.Write("Enter Here:");
-                string choice = Console.ReadLine().Trim().ToLower();
+                
+                // Error handling to check for user input
+                bool errorCheckChoice = true;
+                string choice; 
+                do
+                {
+                    Console.Write("Enter Here:");
+                    choice = Console.ReadLine().Trim().ToLower();
+                    if (choice == "hit" || choice == "stay")
+                    {
+                        errorCheckChoice = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine($"[{choice}] is not an option. Please input choice again.");
+                        Console.WriteLine();
+                    }
+
+                } while (errorCheckChoice);
                 Console.WriteLine();
 
                 if (choice == "hit")
@@ -136,7 +172,7 @@ namespace MiniProjectBlackJack
                     Console.Write($"  =  {player.CardValueSum}");
                     Console.WriteLine();
 
-                    if (player.CardValueSum > 21)
+                    if (player.CardValueSum > 21) //If player card sum value is over 21 end the game, player loses
                     {
                         Thread.Sleep(1000);
                         Console.WriteLine();
@@ -186,7 +222,7 @@ namespace MiniProjectBlackJack
                     dealer.PrintHand();
                     Console.Write($"  =  {dealer.CardValueSum}");
                     Console.WriteLine();
-                    if (dealer.CardValueSum > 21)
+                    if (dealer.CardValueSum > 21) //If dealer card sum value is over 21 end the game, dealer loses
                     {
                         Thread.Sleep(1000);
                         Console.WriteLine();
