@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace MiniProjectBlackJack
 {
     /// <summary>
-    /// FOR TOMORROW Add and method to check who wins, Fix the recursion issue(Outputs stack when game restarts by recursion and player exits manually)
+    /// Single player blackjack, Deals and Dealer plays automatically, Player choses to hit or stay
+    /// No betting yet
     /// </summary>
     public class GameLoop
     {
@@ -23,7 +24,7 @@ namespace MiniProjectBlackJack
                 Player player = new Player(); //New player and Dealer Creation
                 Dealer dealer = new Dealer();
                 Deal(player, dealer); // Deals initial cards, sets hands, calulates totals, prints hands
-                if (PlayerHitOrStay(player) || DealerHitOrStay(dealer)) // User choice to hit or stay, updates player and dealer hand and total accordingly, end if player busts
+                if (PlayerHitOrStay(player) || DealerHitOrStay(dealer)) // User choice to hit or stay, updates player and dealer hand and total accordingly, end if player or dealer busts
                 {
                     continueGame = false;
                 }
@@ -32,9 +33,7 @@ namespace MiniProjectBlackJack
                     EndGameCheck(player, dealer); //Final check to see who wins or if it is a tie
                 }
                 continueGame = StartOrEnd(); //Continue or exit
-
-            }
-            
+            }     
         }
 
         //Initial choice to start or end program
@@ -44,7 +43,7 @@ namespace MiniProjectBlackJack
             Console.WriteLine("WELCOME TO BLACKJACK!");
             Console.WriteLine("Would you like to start a game or Exit the program?");
             Console.WriteLine();
-            Console.WriteLine("Type BEGIN to sart and new game    OR    EXIT to exit the program");
+            Console.WriteLine("Type BEGIN to start and new game    OR    EXIT to exit the program");
             Console.Write("Choice: ");
             string choice = Console.ReadLine().Trim().ToLower();
             Console.WriteLine();
@@ -70,24 +69,28 @@ namespace MiniProjectBlackJack
             Card card = Deck.ShuffledCardDeck.Pop();
             player.AddToHand(card);
             Console.WriteLine($"First Card to player: {card.CardName}");
+            Thread.Sleep(1000); //Slows down the output of console so it isnt instant
 
             Console.WriteLine();
             //Next is dealer hidden card
             card = Deck.ShuffledCardDeck.Pop();
             dealer.AddToHand(card);
             Console.WriteLine($"First Card to Dealer: HIDDEN");
+            Thread.Sleep(1000);
 
             Console.WriteLine();
             //Next is player 2nd card
             card = Deck.ShuffledCardDeck.Pop();
             player.AddToHand(card);
             Console.WriteLine($"Second Card to player: {card.CardName}");
+            Thread.Sleep(1000);
 
             Console.WriteLine();
             //Last is dealer 2nd card show
             card = Deck.ShuffledCardDeck.Pop();
             dealer.AddToHand(card);
             Console.WriteLine($"Second Card to Dealer: {card.CardName}");
+            Thread.Sleep(1000);
 
             Console.WriteLine();
             Console.WriteLine("<=========================DEAL CARDS END<=========================>");
@@ -107,6 +110,7 @@ namespace MiniProjectBlackJack
             Console.Write($"  =  {player.CardValueSum}");
             Console.WriteLine();
 
+            Thread.Sleep(1000);
             bool whileChoice = true;
             while (whileChoice)
             {
@@ -123,6 +127,7 @@ namespace MiniProjectBlackJack
                     Card card = Deck.ShuffledCardDeck.Pop();
                     player.AddToHand(card);
                     Console.WriteLine($"New Card to player: {card.CardName}");
+                    Thread.Sleep(1000);
 
                     Console.WriteLine();
                     //Print our current player cards and total
@@ -133,6 +138,7 @@ namespace MiniProjectBlackJack
 
                     if (player.CardValueSum > 21)
                     {
+                        Thread.Sleep(1000);
                         Console.WriteLine();
                         Console.WriteLine("BUST, Dealer wins! PLayer Loses!");
                         Console.WriteLine();
@@ -141,12 +147,15 @@ namespace MiniProjectBlackJack
                 }
                 else
                 {
+                    Console.WriteLine($"Player Stays with a total of: {player.CardValueSum}");
+                    Console.WriteLine();
                     whileChoice = false;
                 }
             }
             Console.WriteLine();
             Console.WriteLine("<=========================PLAYER TURN END<=========================>");
             Console.WriteLine();
+            Thread.Sleep(1000);
             return false;
             
         }
@@ -164,6 +173,7 @@ namespace MiniProjectBlackJack
             bool whileChoice = true;
             while (whileChoice)
             {
+                Thread.Sleep(1000);
                 // If dealer card values are less than 17 he must hit else stay
                 if (dealer.CardValueSum < 17)
                 {
@@ -178,6 +188,7 @@ namespace MiniProjectBlackJack
                     Console.WriteLine();
                     if (dealer.CardValueSum > 21)
                     {
+                        Thread.Sleep(1000);
                         Console.WriteLine();
                         Console.WriteLine("BUST, Player wins! Dealer Loses!");
                         Console.WriteLine();
@@ -195,6 +206,7 @@ namespace MiniProjectBlackJack
             Console.WriteLine();
             Console.WriteLine("<=========================DEALER TURN END<=========================>");
             Console.WriteLine();
+            Thread.Sleep(1000);
             return false;
         }
 
@@ -209,18 +221,19 @@ namespace MiniProjectBlackJack
             Console.WriteLine();
             Console.WriteLine($"Dealer Total: {dealerTotal}");
             Console.WriteLine();
+            Thread.Sleep(1000);
 
             if (dealerTotal == playerTotal)
             {
-                Console.WriteLine($"TIE Dealer Total: {dealerTotal} = Player Total: {playerTotal}");
+                Console.WriteLine($"TIE Dealer Total: {dealerTotal} <--> Player Total: {playerTotal}");
             }
             else if (dealerTotal > playerTotal)
             {
-                Console.WriteLine($"Dealer Wins! Dealer Total: {dealerTotal} <- Player Total: {playerTotal}");
+                Console.WriteLine($"Dealer Wins! Dealer Total: {dealerTotal} <-- Player Total: {playerTotal}");
             }
             else
             {
-                Console.WriteLine($"Player Wins! Dealer Total: {dealerTotal} -> Player Total: {playerTotal}");
+                Console.WriteLine($"Player Wins! Dealer Total: {dealerTotal} --> Player Total: {playerTotal}");
             }
             Console.WriteLine();
             Console.WriteLine("<=========================GAME END<=========================>");
