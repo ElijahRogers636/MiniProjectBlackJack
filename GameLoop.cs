@@ -9,27 +9,29 @@ using System.Threading.Tasks;
 namespace MiniProjectBlackJack
 {
     /// <summary>
-    /// FOR TOMORROW Add and method to check who wins, Fix the recursion issue(Outputs stack)
+    /// FOR TOMORROW Add and method to check who wins, Fix the recursion issue(Outputs stack when game restarts by recursion and player exits manually)
     /// </summary>
     public class GameLoop
     {
         //Main gameloop
         public static void Run()
         {
-            while (StartOrEnd())
+            bool continueGame = StartOrEnd(); //Initial start
+            while (continueGame)
             {
                 Deck.ShuffleDeck(); // Inital shuffle
                 Player player = new Player(); //New player and Dealer Creation
                 Dealer dealer = new Dealer();
                 Deal(player, dealer); // Deals initial cards, sets hands, calulates totals, prints hands
-                if (PlayerHitOrStay(player)) // User choice to hit or stay, updates player hand and total accordingly
+                if (PlayerHitOrStay(player) || DealerHitOrStay(dealer)) // User choice to hit or stay, updates player and dealer hand and total accordingly, end if player busts
                 {
-                    Run(); // If true, recursivly call Run() to restart game
+                    continueGame = false;
                 }
-                if (DealerHitOrStay(dealer))// Reveals dealer's hand, hits or stays based on total
+                else
                 {
-                    Run();
+                    EndGameCheck(player, dealer); //Final check to see who wins or if it is a tie
                 }
+                continueGame = StartOrEnd(); //Continue or exit
 
             }
             
@@ -61,7 +63,8 @@ namespace MiniProjectBlackJack
         // Player and Dealer(Expand to add more players if want)
         public static void Deal(Player player, Dealer dealer)
         {
-            Console.WriteLine("<========== DEAL START ==========>");
+            Console.WriteLine("<=========================DEAL CARDS START<=========================>");
+            Console.WriteLine();
 
             // First card goes to player
             Card card = Deck.ShuffledCardDeck.Pop();
@@ -86,19 +89,24 @@ namespace MiniProjectBlackJack
             dealer.AddToHand(card);
             Console.WriteLine($"Second Card to Dealer: {card.CardName}");
 
-            Console.WriteLine("<========== DEAL END ==========>");
+            Console.WriteLine();
+            Console.WriteLine("<=========================DEAL CARDS END<=========================>");
+            Console.WriteLine();
 
-            Console.WriteLine();
-            //Print our current player cards and total
-            Console.Write("Player hand total: ");
-            player.PrintHand();
-            Console.Write($"  =  {player.CardValueSum}");
-            Console.WriteLine();
         }
 
         //Hit or stay choice of the game for player
         static bool PlayerHitOrStay(Player player)
         {
+            Console.WriteLine("<=========================PLAYER TURN START<=========================>");
+            Console.WriteLine();
+
+            //Print our current player cards and total
+            Console.Write("Player hand total: ");
+            player.PrintHand();
+            Console.Write($"  =  {player.CardValueSum}");
+            Console.WriteLine();
+
             bool whileChoice = true;
             while (whileChoice)
             {
@@ -136,6 +144,9 @@ namespace MiniProjectBlackJack
                     whileChoice = false;
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine("<=========================PLAYER TURN END<=========================>");
+            Console.WriteLine();
             return false;
             
         }
@@ -143,6 +154,8 @@ namespace MiniProjectBlackJack
         //Reveal dealer hidden card and hit if total is below 17 and stay if 17 or greater
         static bool DealerHitOrStay(Dealer dealer)
         {
+            Console.WriteLine("<=========================DEALER TURN START<=========================>");
+            Console.WriteLine();
             // Reveal Dealer cards
             Console.Write("Dealer Reveals Hand: ");
             dealer.PrintHand();
@@ -179,7 +192,39 @@ namespace MiniProjectBlackJack
                     whileChoice = false;
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine("<=========================DEALER TURN END<=========================>");
+            Console.WriteLine();
             return false;
+        }
+
+        //Final check to see who wins or if it is a tie
+        static void EndGameCheck(Player player, Dealer dealer)
+        {
+            int dealerTotal = dealer.CardValueSum;
+            int playerTotal = player.CardValueSum;
+            Console.WriteLine("<=========================WHO WINS<=========================>");
+            Console.WriteLine();
+            Console.WriteLine($"Player Total: {playerTotal}");
+            Console.WriteLine();
+            Console.WriteLine($"Dealer Total: {dealerTotal}");
+            Console.WriteLine();
+
+            if (dealerTotal == playerTotal)
+            {
+                Console.WriteLine($"TIE Dealer Total: {dealerTotal} = Player Total: {playerTotal}");
+            }
+            else if (dealerTotal > playerTotal)
+            {
+                Console.WriteLine($"Dealer Wins! Dealer Total: {dealerTotal} <- Player Total: {playerTotal}");
+            }
+            else
+            {
+                Console.WriteLine($"Player Wins! Dealer Total: {dealerTotal} -> Player Total: {playerTotal}");
+            }
+            Console.WriteLine();
+            Console.WriteLine("<=========================GAME END<=========================>");
+            Console.WriteLine();
         }
 
     }
